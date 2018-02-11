@@ -1,0 +1,71 @@
+/******************************************************************************
+
+                              This code is used to check where constructors, 
+                              copy constructors and destructors are called.
+
+*******************************************************************************/
+
+#include <iostream>
+
+using namespace std;
+double y[4]={80,55,33};
+int counter=100;
+class Timer{
+    public:
+    Timer(double* in=&y[1],int n=2);
+    Timer(const Timer &ex);
+    ~Timer(){
+        delete[] arr;
+        cout << ++counter<<" : dtor"<< endl;
+    }
+    
+    Timer lrt(const Timer x) const;
+    
+    private: 
+    double *arr;
+    int n;
+};
+
+Timer::Timer(double* in,int n){
+    arr=new double[this->n=n];
+    for(int i=0;i<this->n;i++)
+    arr[i]=in[i];
+    cout << ++counter<<" : ctor"<< endl;
+}
+
+Timer::Timer(const Timer& ex){
+    n=ex.n;
+    if(ex.arr){
+        arr=new double[n];
+        for(int i=0;i<n;i++)
+        arr[i]=ex.arr[i];
+    }
+    else
+        arr=NULL;
+      cout << ++counter<<" : copy ctor"<< endl;  
+}
+
+Timer Timer::lrt(const Timer x) const{
+    Timer s;
+    *(s.arr)= *(x.arr);
+    return s;
+}
+ 
+int main()
+{
+    double T[]={55,70,40};
+    Timer c[2];
+    Timer *q;
+    {
+        q=new Timer(T,2);
+        Timer b(*q);
+    }
+    Timer y=q->lrt(*q);
+    delete q;
+    //cout<<"Hello World";
+    return 0;
+}
+
+
+
+
